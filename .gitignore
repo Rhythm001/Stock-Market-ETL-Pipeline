@@ -1,0 +1,24 @@
+# Virtual environments
+myenv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables / secrets
+.env
+private.py
+
+# Airflow
+airflow.db
+airflow.cfg
+.airflow/
+logs/
+
+# VS Code
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
