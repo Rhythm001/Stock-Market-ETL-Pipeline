@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 import pandas as pd
+from logger import logger
 
 load_dotenv()
 DB_URL = os.getenv('DB_URL')
@@ -17,11 +18,13 @@ def load_to_postgres(df, table_name):
     columns = ', '.join(df.columns)
     
     with engine.connect() as conn:
-        conn.execute(text(f"""
+        result = conn.execute(text(f"""
                           INSERT INTO {table_name} ({columns})
                           SELECT {columns} FROM _temp_load
                           ON CONFLICT (ticker, trade_date) DO NOTHING;
                           """))
+        inserted = result.rowcount
+        skipped = len(df) - inserted
         conn.commit()
+        logger.info(f"Inserted {inserted}, skipped {skipped} duplicates")
     
-    print(f"Loaded {len(df)} rows into {table_name} (duplicates skipped).")

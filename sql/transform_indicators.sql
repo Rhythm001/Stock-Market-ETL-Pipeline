@@ -1,4 +1,15 @@
 -- Computes all 5 indicators using window functions
+WITH price_changes AS (
+    SELECT
+        ticker,
+        trade_date,
+        close_price,
+        volume,
+        close_price - LAG(close_price) OVER (
+            PARTITION BY ticker ORDER BY trade_date
+        ) AS price_change
+    FROM stock_prices_raw
+)
 
 INSERT INTO stock_prices_enriched(
     ticker,
@@ -8,6 +19,7 @@ INSERT INTO stock_prices_enriched(
     daily_return_pct,
     sma_20,
     sma_50,
+    rsi_14,
     bb_upper,
     bb_lower,
     bb_bandwidth,
@@ -34,8 +46,25 @@ SELECT
     ROUND (AVG(close_price) over (PARTITION BY ticker ORDER BY trade_date ROWS BETWEEN 49 PRECEDING AND CURRENT ROW), 2)
     AS sma_50,
 
-    -- RSI-14 (computed in Python, stored here)
-    -- rsi_14,
+    -- RSI-14 
+    CASE
+        WHEN ROW_NUMBER() OVER w >= 14 THEN
+        ROUND(
+            100 - (
+                100 / (
+                    1 + (
+                        AVG(CASE WHEN price_change > 0 THEN price_change ELSE 0 END) OVER w14
+                        /
+                        NULLIF(
+                            AVG(CASE WHEN price_change < 0 THEN ABS(price_change) ELSE 0 END) OVER w14,
+                            0
+                        )
+                    )
+                )
+            ),
+            4
+        ) ELSE NULL
+        END AS rsi_14,
 
     -- Bollinger Bands
     ROUND(AVG(close_price) OVER w20 + 2*STDDEV(close_price) OVER w20, 2) AS bb_upper,
@@ -53,12 +82,13 @@ SELECT
     NOW() AS computed_at
 
 
-    FROM stock_prices_raw
+    FROM price_changes
 
     WINDOW
         w as (PARTITION BY ticker ORDER BY trade_date),
         w20 AS (PARTITION BY ticker ORDER BY trade_date ROWS BETWEEN 19 PRECEDING AND CURRENT ROW),
-        w50 AS (PARTITION BY ticker ORDER BY trade_date ROWS BETWEEN 49 PRECEDING AND CURRENT ROW)
+        w50 AS (PARTITION BY ticker ORDER BY trade_date ROWS BETWEEN 49 PRECEDING AND CURRENT ROW),
+        w14 AS (PARTITION BY ticker ORDER BY trade_date ROWS BETWEEN 13 PRECEDING AND CURRENT ROW)
     ON CONFLICT (ticker, trade_date) DO NOTHING;
 
 

@@ -2,6 +2,8 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text 
 from pathlib import Path
+from logger import logger
+
 
 load_dotenv()
 DB_URL = os.getenv('DB_URL')
@@ -15,7 +17,7 @@ def run_transformation():
         conn.execute(text(sql))
         conn.commit()
         
-    print("Transformation complete.")
+    logger.info("Transformation complete.")
     
 if __name__ == '__main__':
     run_transformation()

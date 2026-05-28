@@ -1,3 +1,6 @@
+from sqlalchemy import text
+from logger import logger
+
 def run_checks(engine):
     checks = [
         ('Null close Prices',
@@ -7,10 +10,12 @@ def run_checks(engine):
     ]
     failures = []
     
-    for name, query in checks:
-        result = engine.execute(query).scalary()
-        if result != 0 and name != 'Ticker count today':
-            failures.append(f'FAILED: {name} ({result} violations)')
-        elif name == 'Ticker count today' and result != 10:
-            failures.append(f'FAILED: Only {result}/10 tickers loaded')
-    return failures
+    with engine.connect() as conn:
+        for name, query in checks:
+            logger.info("Starting ETL pipeline")
+            result = conn.execute(text(query)).scalar()
+            if result != 0 and name != 'Ticker count today':
+                failures.append(f'FAILED: {name} ({result} violations)')
+            elif name == 'Ticker count today' and result != 10:
+                failures.append(f'FAILED: Only {result}/10 tickers loaded')
+        return failures
