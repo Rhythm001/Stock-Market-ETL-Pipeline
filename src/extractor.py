@@ -8,7 +8,7 @@ TICKERS = ['INFY.NS', 'TCS.NS', 'WIPRO.NS', 'HCLTECH.NS', 'TECHM.NS', 'AAPL', 'M
 def fetch_ticker(ticker, retries = 3):
     for attempt in range(retries):
         try:
-            df = yf.ticker(ticker).history(period='60d')
+            df = yf.Ticker(ticker).history(period='60d')
             if df.empty:
                 return None   # Market holiday or no data
             df['ticker'] = ticker

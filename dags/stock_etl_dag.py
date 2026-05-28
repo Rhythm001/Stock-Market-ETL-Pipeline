@@ -13,14 +13,14 @@ default_args = {
 with DAG (
     dag_id = 'stock_market_etl',
     default_args = default_args, 
-    schedule_interval = '0 6 * * 1-5',
+    schedule = '0 6 * * 1-5',
     start_date = datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
-    extract = PythonOperator('task_id'='extract_raw_data', python_callable=extract_all)
-    load = PythonOperator('task_id' = 'load_to_postgres', python_callable=load_to_postgres)
-    transform = PythonOperator('task_id'='run_transformations', python_callable=runtransformations)
-    quality = PythonOperator(task_id='run_quality_checks', python_callable=run_checks)
-    report = PythonOperator(task_id='run_quality_checks', python_callable=generate_report)
+    extract = PythonOperator(task_id='extract_raw_data', python_callable=extract_all)
+    load = PythonOperator(task_id = 'load_to_postgres', python_callable=load_to_postgres)
+    # transform = PythonOperator(task_id='run_transformations', python_callable=run_transformations)
+    # quality = PythonOperator(task_id='run_quality_checks', python_callable=run_checks)
+    # report = PythonOperator(task_id='run_quality_checks', python_callable=generate_report)
     
-    extract >> load >> transform >> quality >> report
+    extract >> load #>> transform >> quality >> report
