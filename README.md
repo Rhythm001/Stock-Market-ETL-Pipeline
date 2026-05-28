@@ -47,7 +47,7 @@ project/
 └── README.md
 
 
-## Workflow
+Workflow
 
 1. Extract stock market data from source APIs/files
 2. Transform and clean raw data
@@ -57,9 +57,9 @@ project/
 
 ---
 
-## Setup Instructions
+Setup Instructions
 
-### Clone Repository
+Clone Repository
 
 ```bash
 git clone https://github.com/Rhythm001/Stock-Market-ETL-Pipeline.git
