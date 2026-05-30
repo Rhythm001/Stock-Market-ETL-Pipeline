@@ -1,16 +1,22 @@
-from extractor import extract_all
-from quality_checks import run_checks
-from loader import load_to_postgres
-from transformer import run_transformation
+from src.extractor import extract_all
+from src.quality_checks import run_checks
+from src.loader import load_to_postgres
+from src.transformer import run_transformation
 import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
-from logger import logger
+from src.logger import logger
 
-load_dotenv()
-DB_URL = os.getenv("DB_URL")
-engine = create_engine(DB_URL)
+# load_dotenv()
+
+# DB_URL = os.getenv("DB_URL")
+# engine = create_engine(DB_URL)
+
+def get_engine():
+    # load_dotenv()
+    DB_URL = os.getenv("DB_URL")
+    return create_engine(DB_URL)
 
 COLUMN_RENAME_MAP = {
     'Date' : 'trade_date',
@@ -50,37 +56,80 @@ def clean_dataframe(df, ticker):
     
     return df
 
-def run_pipeline():
-    try:
-        logger.info("Pipeline Started.")
+def run_extraction_load():
+    logger.info("Starting extraction + load")
+    
+    raw_data = extract_all()
+    
+    logger.info(f"Extracted {len(raw_data)} tickers")
+    
+    for ticker, df in raw_data.items():
+        logger.info(f"Processing {ticker}")
         
-        logger.info("Extraction Started")
-        raw_data = extract_all()
-        logger.info(f"Extracted data for {len(raw_data)} tickers.")
+        cleaned_df = clean_dataframe(df, ticker)
         
-        for ticker, df in raw_data.items():
-            logger.info(f"Processing {ticker}...")
-            
-            cleaned_df = clean_dataframe(df, ticker)
-            
-            load_to_postgres(cleaned_df, 'stock_prices_raw')
-            logger.info(f"Loaded {len(cleaned_df)} rows for {ticker}")
+        load_to_postgres(cleaned_df, 'stock_prices_raw')
         
-        logger.info("Running transformations...")
-        run_transformation()
-        logger.info("Indicators computed successfully")
-        
-        failures = run_checks(engine)
-        logger.info(f"Quality checks completed. Failures: {len(failures)}")
-        
-        if failures:
-            raise Exception("\n".join(failures))
+        logger.info(f"Loaded {len(cleaned_df)} rows for {ticker}")
+    
+    logger.info("Extraction + load complete")
 
-        logger.info("Pipeline completed successfully.")
+def run_transform_task():
+    logger.info("Starting transformations")
+    
+    run_transformation()
+    
+    logger.info("Transformations complete") 
+
+def run_quality_task():
+    logger.info("Running quality checks")
+    
+    failures = run_checks(get_engine())
+    
+    if failures:
+        for failure in failures:
+            logger.error(failure)
         
-    except Exception as e:
-        logger.exception(f"Pipeline failed: {e}")
-        raise
+        raise Exception("\n".join(failures))
+    
+    logger.info("All quality checks passed")
+
+def run_pipeline():
+    run_extraction_load()
+    run_transform_task()
+    run_quality_task()
+
+# def run_pipeline():
+    # try:
+    #     logger.info("Pipeline Started.")
+        
+    #     logger.info("Extraction Started")
+    #     raw_data = extract_all()
+    #     logger.info(f"Extracted data for {len(raw_data)} tickers.")
+        
+    #     for ticker, df in raw_data.items():
+    #         logger.info(f"Processing {ticker}...")
+            
+    #         cleaned_df = clean_dataframe(df, ticker)
+            
+    #         load_to_postgres(cleaned_df, 'stock_prices_raw')
+    #         logger.info(f"Loaded {len(cleaned_df)} rows for {ticker}")
+        
+    #     logger.info("Running transformations...")
+    #     run_transformation()
+    #     logger.info("Indicators computed successfully")
+        
+    #     failures = run_checks(engine)
+    #     logger.info(f"Quality checks completed. Failures: {len(failures)}")
+        
+    #     if failures:
+    #         raise Exception("\n".join(failures))
+
+    #     logger.info("Pipeline completed successfully.")
+        
+    # except Exception as e:
+    #     logger.exception(f"Pipeline failed: {e}")
+    #     raise
     
 if __name__ == '__main__':
     run_pipeline()

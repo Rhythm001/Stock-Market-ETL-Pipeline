@@ -2,12 +2,12 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 import pandas as pd
-from logger import logger
+from src.logger import logger
 
 load_dotenv()
 DB_URL = os.getenv('DB_URL')
 def load_to_postgres(df, table_name):
-    engine = create_engine(DB_URL) # 'postgresql://postgres:rhythm123@localhost:5432/postgres'
+    engine = get_engine() # 'postgresql://postgres:rhythm123@localhost:5432/postgres'
     df.to_sql(
         name = '_temp_load',
         con = engine,

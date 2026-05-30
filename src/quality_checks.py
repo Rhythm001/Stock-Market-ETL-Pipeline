@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from logger import logger
+from src.logger import logger
 
 def run_checks(engine):
     checks = [

@@ -24,3 +24,6 @@ logs/
 # OS junk
 .DS_Store
 Thumbs.db
+
+# some txt files
+old_terminal_commands.txt
