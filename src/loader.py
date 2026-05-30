@@ -4,13 +4,15 @@ from sqlalchemy import create_engine, text
 import pandas as pd
 from src.logger import logger
 
-load_dotenv()
-DB_URL = os.getenv('DB_URL')
+def get_engine():
+    DB_URL = os.getenv("DB_URL")
+    return create_engine(DB_URL)
+
 def load_to_postgres(df, table_name):
     engine = get_engine() # 'postgresql://postgres:rhythm123@localhost:5432/postgres'
     df.to_sql(
         name = '_temp_load',
-        con = engine,
+        con = conn,
         if_exists = 'replace',
         index = False,
         method = 'multi'  # batch insert - for performance  
