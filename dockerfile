@@ -1,4 +1,4 @@
-FROM apache/airflow:2.9.1
+FROM apache/airflow:2.10.5
 USER root
 COPY requirements.txt /requirements.txt
 USER airflow

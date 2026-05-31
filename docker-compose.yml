@@ -15,6 +15,7 @@ services:
 
   airflow-init:
     build: .
+    command: db migrate
     depends_on:
       - postgres
     environment:
@@ -27,11 +28,12 @@ services:
       _AIRFLOW_WWW_USER_USERNAME: admin
       _AIRFLOW_WWW_USER_PASSWORD: admin
       DB_URL: postgresql+psycopg2://postgres:rhythm123@postgres:5432/stock_market
-    command: version
+
     volumes:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./logs:/opt/airflow/logs
+      - ./sql:/opt/airflow/sql
 
   airflow-webserver:
     build: .
@@ -56,6 +58,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./logs:/opt/airflow/logs
+      - ./sql:/opt/airflow/sql
 
   airflow-scheduler:
     build: .
@@ -75,6 +78,7 @@ services:
       - ./dags:/opt/airflow/dags
       - ./src:/opt/airflow/src
       - ./logs:/opt/airflow/logs
+      - ./sql:/opt/airflow/sql
 
 volumes:
   postgres-db-volume:
