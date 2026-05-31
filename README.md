@@ -1,89 +1,148 @@
 # Stock Market ETL Pipeline
 
-An automated ETL pipeline built using Python, Apache Airflow, and PostgreSQL for extracting, transforming, storing, and reporting stock market data in a modular Linux-based workflow environment.
+An end-to-end automated **ETL pipeline** that extracts stock market data, processes and validates it, stores it in PostgreSQL, and orchestrates the workflow using **Apache Airflow** and **Docker Compose**.
+
+This project demonstrates practical data engineering concepts including workflow orchestration, data validation, SQL transformations, modular pipeline design, and containerized deployment.
+
+---
+
+## Architecture
+
+```text
+Stock API Extraction
+       ↓
+Raw Data Load (PostgreSQL)
+       ↓
+SQL Transformations
+       ↓
+Data Quality Validation
+       ↓
+Report Generation
+       ↓
+Airflow Orchestration & Monitoring
+```
+
+---
+
+## Airflow DAG Execution
+
+![Airflow DAG Success](assets/airflow-success.png)
+
+---
 
 ## Features
 
-- Automated ETL orchestration using Apache Airflow DAGs
-- Modular pipeline architecture for extraction, transformation, and reporting
-- PostgreSQL database integration
-- Automated scheduling and workflow execution
-- Logging and error handling
-- Linux/WSL development environment
-- Scalable and maintainable project structure
+- Automated ETL orchestration using Apache Airflow
+- Modular Python-based pipeline design
+- PostgreSQL raw and enriched data layers
+- SQL-based transformation workflows
+- Automated data quality validation checks
+- Dockerized execution environment
+- Airflow task monitoring and dependency management
+- Logging and exception handling
+- Linux (WSL) development environment
+
+---
 
 ## Tech Stack
 
 - Python
 - Apache Airflow
 - PostgreSQL
-- SQLAlchemy / psycopg2
+- SQLAlchemy
 - Pandas
+- Docker
+- Docker Compose
 - Linux (WSL)
-- VS Code
 - Git
-
-## Project Structure
-
-```bash
-project/
-│
-├── dags/
-│   └── stock_etl_dag.py
-│
-├── scripts/
-│   ├── extract.py
-│   ├── transform.py
-│   ├── load.py
-│   └── report.py
-│
-├── sql/
-│   └── schema.sql
-│
-├── logs/
-│
-├── requirements.txt
-│
-└── README.md
-
-
-Workflow
-
-1. Extract stock market data from source APIs/files
-2. Transform and clean raw data
-3. Load processed data into PostgreSQL
-4. Generate reports and summaries
-5. Schedule and monitor workflows using Airflow
+- VS Code
 
 ---
 
-Setup Instructions
+## Project Structure
 
-Clone Repository
+```text
+Stock-Market-ETL-Pipeline/
+│
+├── dags/
+│   └── stock_market_etl.py
+│
+├── src/
+│   ├── extractor.py
+│   ├── loader.py
+│   ├── transformer.py
+│   ├── quality_checks.py
+│   ├── pipeline.py
+│   └── logger.py
+│
+├── sql/
+│   └── transformations.sql
+│
+├── assets/
+│   └── airflow-success.png
+│
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Workflow
+
+### 1. Extract
+Fetch historical stock market data from source APIs.
+
+### 2. Load
+Store raw stock data in PostgreSQL.
+
+### 3. Transform
+Apply SQL transformations to create enriched analytical datasets.
+
+### 4. Validate
+Run automated quality checks:
+
+- Null value detection
+- Invalid price validation
+- Ticker completeness checks
+
+### 5. Report
+Generate summary outputs.
+
+### 6. Orchestrate
+Schedule and monitor execution through Apache Airflow.
+
+---
+
+## Setup Instructions
+
+### Clone Repository
 
 ```bash
 git clone https://github.com/Rhythm001/Stock-Market-ETL-Pipeline.git
 cd Stock-Market-ETL-Pipeline
 ```
 
-### Create Virtual Environment
+---
 
-```bash
-python -m venv myenv
-source myenv/bin/activate
+### Configure Environment
+
+Create a `.env` file:
+
+```env
+DB_URL=postgresql://username:password@host:5432/database
 ```
 
-### Install Dependencies
+---
+
+### Run the Pipeline
 
 ```bash
-pip install -r requirements.txt
+docker compose up --build
 ```
 
-### Run Airflow
-
-```bash
-airflow standalone
-```
+---
 
 ### Access Airflow UI
 
@@ -91,25 +150,64 @@ airflow standalone
 http://localhost:8080
 ```
 
+Trigger DAG:
+
+```text
+stock_market_etl
+```
+
+---
+
+## Validation Results
+
+Successful execution confirms:
+
+- Data extraction completed
+- Raw data successfully loaded
+- Transformations executed
+- Quality checks passed
+- Reports generated
+- DAG completed successfully
+
+---
+
+## Sample Output
+
+**Database Validation**
+
+```sql
+SELECT COUNT(*) FROM stock_prices_enriched;
+-- 599
+```
+
+---
+
+## Key Learnings
+
+This project strengthened understanding of:
+
+- ETL pipeline architecture
+- Workflow orchestration with Airflow
+- PostgreSQL integration
+- SQL transformations
+- Data quality engineering
+- Dockerized data pipelines
+- Debugging distributed workflow failures
+
 ---
 
 ## Future Improvements
 
-- Docker containerization
-- Cloud deployment
-- Real-time streaming support
-- Dashboard integration
-- Automated alerting system
+- Interactive dashboard visualization
+- Automated alerting for failures
+- Cloud deployment (AWS/GCP)
+- Real-time streaming ingestion
+- CI/CD integration
 
 ---
 
-## Learning Outcomes
+## Author
 
-This project helped strengthen practical understanding of:
+**Rhythm**
 
-- ETL architecture
-- Workflow orchestration
-- Database integration
-- Modular Python development
-- Linux-based development workflows
-- Airflow DAG scheduling
+Business Analyst transitioning into Data Engineering through hands-on ETL and workflow orchestration projects.
