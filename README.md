@@ -64,27 +64,34 @@ Airflow Orchestration & Monitoring
 ```text
 Stock-Market-ETL-Pipeline/
 │
-├── dags/
-│   └── stock_market_etl.py
-│
-├── src/
-│   ├── extractor.py
-│   ├── loader.py
-│   ├── transformer.py
-│   ├── quality_checks.py
-│   ├── pipeline.py
-│   └── logger.py
-│
-├── sql/
-│   └── transformations.sql
-│
+├── README.md
 ├── assets/
 │   └── airflow-success.png
 │
+├── dags/
+│   └── stock_etl_dag.py
+│
+├── src/
+│   ├── __init__.py
+│   ├── extractor.py
+│   ├── loader.py
+│   ├── logger.py
+│   ├── pipeline.py
+│   ├── quality_checks.py
+│   ├── report_generator.py
+│   └── transformer.py
+│
+├── sql/
+│   ├── create_tables.sql
+│   ├── transform_indicators.sql
+│   └── queries/
+│
+├── tests/
+│
 ├── docker-compose.yml
-├── Dockerfile
+├── dockerfile
 ├── requirements.txt
-└── README.md
+└── private.py
 ```
 
 ---

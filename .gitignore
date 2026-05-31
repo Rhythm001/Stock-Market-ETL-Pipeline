@@ -9,14 +9,12 @@ __pycache__/
 *.pyc
 
 # Environment variables / secrets
-.env
 private.py
 
 # Airflow
 airflow.db
 airflow.cfg
 .airflow/
-logs/
 
 # VS Code
 .vscode/
@@ -25,5 +23,5 @@ logs/
 .DS_Store
 Thumbs.db
 
-# some txt files
+# temp files
 old_terminal_commands.txt
