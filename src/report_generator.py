@@ -45,18 +45,25 @@ def _row_counts(conn) -> dict:
     """Row counts for both tables."""
     raw_count = _scalar(conn, "SELECT COUNT(*) FROM stock_prices_raw")
     enriched_count = _scalar(conn, "SELECT COUNT(*) FROM stock_prices_enriched")
-    ticker_count = _scalary(conn, """
-                            SELECT COUNT(DISTINCT ticker)
-                            FROM stock_prices_enriched
-                            WHERE trade_date = (SELECT MAX(trade_date) FROM stock_prices_enriched)""")
-    
+
+    ticker_count = _scalar(
+        conn,
+        """
+        SELECT COUNT(DISTINCT ticker)
+        FROM stock_prices_enriched
+        WHERE trade_date = (
+            SELECT MAX(trade_date)
+            FROM stock_prices_enriched
+        )
+        """
+    )
+
     return {
-        "raw_row" : int(raw_count),
-        "enriched_rows" : int(enriched_count),
-        "tickers_latest_date" : TICKERS_EXPECTED, 
-        "ticker_completeness_ok" : ticker_count == TICKERS_EXPECTED,
+        "raw_rows": int(raw_count),
+        "enriched_rows": int(enriched_count),
+        "tickers_latest_date": int(ticker_count),
+        "ticker_completeness_ok": ticker_count == TICKERS_EXPECTED,
     }
-    
     
 def _quality_summary(conn) -> dict:
     """Re-run the same quality checks the piepline runs, capture counts."""
