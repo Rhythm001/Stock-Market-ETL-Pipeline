@@ -1,6 +1,6 @@
-# Stock Market ETL Pipeline
+# Stock Market ETL + Analytics Dashboard
 
-An end-to-end automated **ETL pipeline** that extracts stock market data, processes and validates it, stores it in PostgreSQL, and orchestrates the workflow using **Apache Airflow** and **Docker Compose**.
+An end-to-end data engineering pipeline that extracts stock market data, transforms and stores it in PostgreSQL, orchestrates workflows using **Apache Airflow** and **Docker Compose**, and visualizes analytics through an interactive **Streamlit dashboard**.
 
 This project demonstrates practical data engineering concepts including workflow orchestration, data validation, SQL transformations, modular pipeline design, and containerized deployment.
 
@@ -9,20 +9,31 @@ This project demonstrates practical data engineering concepts including workflow
 ## Architecture
 
 ```text
-Stock API Extraction
-       ↓
+Stock Data Extraction
+        ↓
 Raw Data Load (PostgreSQL)
-       ↓
-SQL Transformations
-       ↓
+        ↓
+Technical Indicator Transformations
+        ↓
 Data Quality Validation
-       ↓
-Report Generation
-       ↓
-Airflow Orchestration & Monitoring
+        ↓
+Airflow Orchestration
+        ↓
+Streamlit Analytics Dashboard
 ```
 
 ---
+## Dashboard
+
+### Pipeline Health
+![Pipeline Health](assets/pipeline-health.png)
+
+### Stock Deep Dive
+![Stock Deep Dive](assets/deep-dive.png)
+
+### Stock Comparison
+![Stock Comparison](assets/comparison.png)
+
 
 ## Airflow DAG Execution
 
@@ -33,12 +44,15 @@ Airflow Orchestration & Monitoring
 ## Features
 
 - Automated ETL orchestration using Apache Airflow
-- Modular Python-based pipeline design
-- PostgreSQL raw and enriched data layers
-- SQL-based transformation workflows
-- Automated data quality validation checks
-- Dockerized execution environment
-- Airflow task monitoring and dependency management
+- PostgreSQL raw + enriched analytical layers
+- Technical indicator computation (SMA, RSI, Bollinger Bands)
+- Interactive Streamlit analytics dashboard
+- Pipeline operational monitoring
+- Comparative stock scoring engine
+- Dockerized backend infrastructure
+- Modular transformation pipeline
+- Data quality validation checks
+- Automated ETL orchestration using Apache Airflow
 - Logging and exception handling
 - Linux (WSL) development environment
 
@@ -91,7 +105,15 @@ Stock-Market-ETL-Pipeline/
 ├── docker-compose.yml
 ├── dockerfile
 ├── requirements.txt
-└── private.py
+├──  private.py
+│
+├──pages/
+├── 1_Pipeline_Health.py
+├── 2_Stock_Deep_Dive.py
+└── 3_Stock_Stack_Comparison.py
+
+.streamlit/
+└── config.toml
 ```
 
 ---
@@ -151,6 +173,14 @@ docker compose up --build
 
 ---
 
+### Run Dashboard
+
+```powershell
+$env:DB_URL="postgresql://postgres:***@localhost:5433/stock_market"
+streamlit run app.py
+
+---
+
 ### Access Airflow UI
 
 ```text
@@ -205,16 +235,14 @@ This project strengthened understanding of:
 
 ## Future Improvements
 
-- Interactive dashboard visualization
-- Automated alerting for failures
+- CI/CD pipeline automation
+- dbt integration
+- Kafka-based streaming ingestion
 - Cloud deployment (AWS/GCP)
-- Real-time streaming ingestion
-- CI/CD integration
+- Hosted dashboard deployment
 
 ---
 
-## Author
+## Built By
 
-**Rhythm**
-
-Business Analyst transitioning into Data Engineering through hands-on ETL and workflow orchestration projects.
+Rhythm

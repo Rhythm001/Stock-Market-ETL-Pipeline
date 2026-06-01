@@ -30,8 +30,8 @@ def load_data():
     query = """
     SELECT
         ticker,
-        date,
-        close,
+        trade_date,
+        close_price,
         volume,
         rsi_14,
         sma_20,
@@ -39,7 +39,7 @@ def load_data():
         bb_upper,
         bb_lower
     FROM stock_prices_enriched
-    ORDER BY date
+    ORDER BY trade_date
     """
     return pd.read_sql(query, engine)
 
@@ -52,14 +52,14 @@ if df.empty:
 # -----------------------------
 # Latest Snapshot
 # -----------------------------
-latest_date = df["date"].max()
-latest = df[df["date"] == latest_date].copy()
+latest_date = df["trade_date"].max()
+latest = df[df["trade_date"] == latest_date].copy()
 
 # -----------------------------
 # Derived Metrics
 # -----------------------------
 latest["momentum"] = (
-    (latest["close"] - latest["sma_20"]) / latest["sma_20"]
+    (latest["close_price"] - latest["sma_20"]) / latest["sma_20"]
 )
 
 latest["trend_strength"] = (
@@ -67,7 +67,7 @@ latest["trend_strength"] = (
 )
 
 latest["volatility"] = (
-    (latest["bb_upper"] - latest["bb_lower"]) / latest["close"]
+    (latest["bb_upper"] - latest["bb_lower"]) / latest["close_price"]
 )
 
 latest["rsi_score"] = 100 - abs(latest["rsi_14"] - 50)
@@ -102,7 +102,7 @@ st.subheader("🏆 Stock Ranking")
 display_cols = [
     "rank",
     "ticker",
-    "close",
+    "close_price",
     "rsi_14",
     "composite_score"
 ]
