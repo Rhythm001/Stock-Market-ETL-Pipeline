@@ -1,9 +1,9 @@
-pandas==2.2.3
-psycopg2-binary==2.9.12
-python-dotenv==1.2.2
-yfinance==0.2.61
-plotly
-streamlit
-numpy
-sqlalchemy
+pandas==2.2.3 
+psycopg2-binary==2.9.12 
+python-dotenv==1.2.2 
+yfinance==0.2.61 
+plotly 
+streamlit 
+numpy 
+sqlalchemy 
 apache-airflow
