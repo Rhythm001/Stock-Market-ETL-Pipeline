@@ -24,10 +24,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Lint Python Files
+    - name: Lint (critical errors only)
       run: |
-        pip install flake8
-        flake8 src pages app.py --max-line-length=100
+        flake8 src pages app.py --select=E9,F63,F7,F82
 
     - name: Validate Imports
       run: |

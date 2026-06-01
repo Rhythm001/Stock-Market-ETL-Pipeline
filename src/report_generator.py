@@ -54,7 +54,7 @@ def _row_counts(conn) -> dict:
         "raw_row" : int(raw_count),
         "enriched_rows" : int(enriched_count),
         "tickers_latest_date" : TICKERS_EXPECTED, 
-        "ticker_completeness_ok" : ticker_count = TICKERS_EXPECTED,
+        "ticker_completeness_ok" : ticker_count == TICKERS_EXPECTED,
     }
     
     
