@@ -2,11 +2,14 @@
 .env
 myenv/
 venv/
+.env.streamlit
 
 # Python cache
 logs/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Environment variables / secrets
 private.py
@@ -18,6 +21,12 @@ airflow.cfg
 
 # VS Code
 .vscode/
+.idea/
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit
+
 
 # OS junk
 .DS_Store
@@ -25,3 +34,10 @@ Thumbs.db
 
 # temp files
 old_terminal_commands.txt
+
+
+# Docker
+postgres_data/
+
+# Cache
+.pytest_cache/

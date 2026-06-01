@@ -2,6 +2,7 @@ from src.extractor import extract_all
 from src.quality_checks import run_checks
 from src.loader import load_to_postgres
 from src.transformer import run_transformation
+from src.report_generator import generate_report
 import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
@@ -60,7 +61,6 @@ def run_extraction_load():
     logger.info("Starting extraction + load")
     
     raw_data = extract_all()
-    
     logger.info(f"Extracted {len(raw_data)} tickers")
     
     for ticker, df in raw_data.items():
@@ -94,10 +94,18 @@ def run_quality_task():
     
     logger.info("All quality checks passed")
 
+
+def run_report_task():
+    logger.info("Starting report generation")
+    path = generate_report()
+    logger.info(f"Report saved -> {path}")
+
+
 def run_pipeline():
     run_extraction_load()
     run_transform_task()
     run_quality_task()
+    run_report_task()
 
 # def run_pipeline():
     # try:
