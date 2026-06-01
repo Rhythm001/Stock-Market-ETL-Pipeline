@@ -1,0 +1,39 @@
+```yaml
+name: Stock Market ETL CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set Up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Lint Python Files
+      run: |
+        pip install flake8
+        flake8 src pages app.py --max-line-length=100
+
+    - name: Validate Imports
+      run: |
+        python -m compileall src pages app.py
+
+    - name: Docker Compose Validation
+      run: docker compose config
+```

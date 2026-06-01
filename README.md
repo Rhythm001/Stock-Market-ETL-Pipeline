@@ -1,3 +1,5 @@
+![CI](https://github.com/Rhythm001/Stock-Market-ETL-Pipeline/actions/workflows/ci.yml/badge.svg)
+
 # Stock Market ETL + Analytics Dashboard
 
 An end-to-end data engineering pipeline that extracts stock market data, transforms and stores it in PostgreSQL, orchestrates workflows using **Apache Airflow** and **Docker Compose**, and visualizes analytics through an interactive **Streamlit dashboard**.
