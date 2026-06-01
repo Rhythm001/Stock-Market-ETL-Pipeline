@@ -1,4 +1,4 @@
-![CI](https://github.com/Rhythm001/Stock-Market-ETL-Pipeline/actions/workflows/ci.yml/badge.svg)
+[![Stock Market ETL CI](https://github.com/Rhythm001/Stock-Market-ETL-Pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/Rhythm001/Stock-Market-ETL-Pipeline/actions/workflows/ci.yml)
 
 # Stock Market ETL + Analytics Dashboard
 
