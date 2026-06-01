@@ -26,6 +26,7 @@ jobs:
 
     - name: Lint (critical errors only)
       run: |
+        pip install flake8
         flake8 src pages app.py --select=E9,F63,F7,F82
 
     - name: Validate Imports
