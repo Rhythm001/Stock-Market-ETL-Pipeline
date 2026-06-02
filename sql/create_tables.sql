@@ -33,6 +33,11 @@ CREATE TABLE stock_prices_enriched(
     PRIMARY KEY (ticker, trade_date)
 );
 
+CREATE TABLE IF NOT EXISTS pipeline_logs (
+    id SERIAL PRIMARY KEY,
+    execution_date TIMESTAMP DEFAULT NOW(),
+    report_json TEXT
+);
 
 --select * from stock_prices_raw;
 

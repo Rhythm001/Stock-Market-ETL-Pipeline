@@ -6,12 +6,27 @@ Reads directly from stock_prices_raw and stock_prices_enriched.
 No dependency on report JSON files.
 """
 
+import json
 import os
 import streamlit as st
 import pandas as pd
 from sqlalchemy import create_engine, text
 from datetime import datetime, timezone
+from dotenv import load_dotenv
 
+load_dotenv()
+
+DB_URL = os.getenv("DB_URL")
+
+if not DB_URL:
+    raise ValueError("DB_URL environment variable is missing. Check your configuration.")
+
+if DB_URL.startswith("postgres://"):
+    DB_URL = DB_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+elif not DB_URL.startswith("postgresql+psycopg2://"):
+    DB_URL = DB_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+    
+engine = create_engine(DB_URL)
 # ── page config ───────────────────────────────────────────────────────────────
 
 st.set_page_config(

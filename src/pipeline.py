@@ -4,10 +4,12 @@ from src.loader import load_to_postgres
 from src.transformer import run_transformation
 from src.report_generator import generate_report
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 import os
 from src.logger import logger
+import json
+
 
 # load_dotenv()
 
@@ -97,8 +99,23 @@ def run_quality_task():
 
 def run_report_task():
     logger.info("Starting report generation")
-    path = generate_report()
-    logger.info(f"Report saved -> {path}")
+    
+    # Get validation data from existing generator
+    report_data = generate_report()
+    
+    # Convert to clean json string
+    if isinstance(report_data, dict):
+        json_str = json.dumps(report_data)
+    else:
+        json_str = report_date
+        
+    # Write it directly to DB_URL
+    engine = get_engine()
+    with engine.begin() as conn:
+        conn.execute(text("INSERT INTO pipeline_logs (report_json) VALUES (:json_str)"), 
+                     {"json_str": json_str})
+        
+    logger.info("Validation report successfully saved to PostgreSQL database.")
 
 
 def run_pipeline():

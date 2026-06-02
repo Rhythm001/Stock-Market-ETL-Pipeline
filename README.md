@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 5cb2eed (Final changes)
 # Stock Market ETL + Analytics Dashboard
 
 An end-to-end data engineering pipeline that extracts stock market data, transforms and stores it in PostgreSQL, orchestrates workflows using **Apache Airflow** and **Docker Compose**, and visualizes analytics through an interactive **Streamlit dashboard**.
@@ -25,6 +28,7 @@ Streamlit Analytics Dashboard
 ```
 
 ---
+
 ## Dashboard
 
 ### Pipeline Health
@@ -35,7 +39,6 @@ Streamlit Analytics Dashboard
 
 ### Stock Comparison
 ![Stock Comparison](assets/comparison.png)
-
 
 ## Airflow DAG Execution
 
@@ -54,7 +57,6 @@ Streamlit Analytics Dashboard
 - Dockerized backend infrastructure
 - Modular transformation pipeline
 - Data quality validation checks
-- Automated ETL orchestration using Apache Airflow
 - Logging and exception handling
 - Linux (WSL) development environment
 
@@ -82,7 +84,10 @@ Stock-Market-ETL-Pipeline/
 │
 ├── README.md
 ├── assets/
-│   └── airflow-success.png
+│   ├── airflow-success.png
+│   ├── pipeline-health.png
+│   ├── deep-dive.png
+│   └── comparison.png
 │
 ├── dags/
 │   └── stock_etl_dag.py
@@ -107,15 +112,15 @@ Stock-Market-ETL-Pipeline/
 ├── docker-compose.yml
 ├── dockerfile
 ├── requirements.txt
-├──  private.py
 │
-├──pages/
-├── 1_Pipeline_Health.py
-├── 2_Stock_Deep_Dive.py
-└── 3_Stock_Stack_Comparison.py
-
-.streamlit/
-└── config.toml
+├── app.py
+├── pages/
+│   ├── 1_Pipeline_Health.py
+│   ├── 2_Stock_Deep_Dive.py
+│   └── 3_Stock_Stack_Comparison.py
+│
+└── .streamlit/
+    └── config.toml
 ```
 
 ---
@@ -139,10 +144,10 @@ Run automated quality checks:
 - Ticker completeness checks
 
 ### 5. Report
-Generate summary outputs.
+Generate a timestamped JSON report covering pipeline metadata, row counts, data freshness, per-ticker technical indicator snapshots, and anomaly detection (volume spikes, RSI overbought/oversold signals). Overall pipeline status is rolled up to a single `PASS` or `WARN` flag.
 
 ### 6. Orchestrate
-Schedule and monitor execution through Apache Airflow.
+Schedule and monitor execution through Apache Airflow (runs weekdays at 06:00 UTC).
 
 ---
 
@@ -155,8 +160,6 @@ git clone https://github.com/Rhythm001/Stock-Market-ETL-Pipeline.git
 cd Stock-Market-ETL-Pipeline
 ```
 
----
-
 ### Configure Environment
 
 Create a `.env` file:
@@ -165,35 +168,33 @@ Create a `.env` file:
 DB_URL=postgresql://username:password@host:5432/database
 ```
 
----
-
 ### Run the Pipeline
 
 ```bash
 docker compose up --build
 ```
 
----
-
 ### Run Dashboard
 
-```powershell
-$env:DB_URL="postgresql://postgres:***@localhost:5433/stock_market"
+```bash
+# Linux / macOS
+export DB_URL="postgresql://postgres:password@localhost:5432/stock_market"
 streamlit run app.py
+```
 
----
+```powershell
+# Windows (PowerShell)
+$env:DB_URL="postgresql://postgres:password@localhost:5433/stock_market"
+streamlit run app.py
+```
 
 ### Access Airflow UI
 
-```text
+```
 http://localhost:8080
 ```
 
-Trigger DAG:
-
-```text
-stock_market_etl
-```
+Trigger DAG: `stock_market_etl`
 
 ---
 
@@ -212,23 +213,47 @@ Successful execution confirms:
 
 ## Sample Output
 
-**Database Validation**
+**Pipeline Report (JSON)**
 
-```sql
-SELECT COUNT(*) FROM stock_prices_enriched;
--- 599
+```json
+{
+  "pipeline_meta": {
+    "report_generated_at": "2026-06-02T19:00:00+00:00",
+    "last_ingestion_at": "2026-06-02 18:45:00",
+    "latest_trade_date": "2026-05-30",
+    "earliest_trade_date": "2026-01-02"
+  },
+  "row_counts": {
+    "raw_rows": 650,
+    "enriched_rows": 599,
+    "tickers_latest_date": 10,
+    "ticker_completeness_ok": true
+  },
+  "quality_summary": {
+    "null_close_prices": 0,
+    "invalid_prices": 0,
+    "all_passed": true
+  },
+  "freshness": {
+    "latest_trade_date": "2026-05-30",
+    "lag_days": 3,
+    "freshness_ok": true
+  },
+  "anomalies": [
+    "Volume spike: AAPL on 2026-05-30 (z=2.84)",
+    "RSI overbought: MSFT (RSI=72.3)"
+  ],
+  "status": "PASS"
+}
 ```
 
 ---
 
 ## Key Learnings
 
-This project strengthened understanding of:
-
 - ETL pipeline architecture
 - Workflow orchestration with Airflow
-- PostgreSQL integration
-- SQL transformations
+- PostgreSQL integration and SQL transformations
 - Data quality engineering
 - Dockerized data pipelines
 - Debugging distributed workflow failures
@@ -237,11 +262,10 @@ This project strengthened understanding of:
 
 ## Future Improvements
 
-- CI/CD pipeline automation
-- dbt integration
+- dbt integration for transformation layer
 - Kafka-based streaming ingestion
-- Cloud deployment (AWS/GCP)
-- Hosted dashboard deployment
+- Production deployment on Render (attempted; Airflow webserver exceeds Free tier 512MB RAM limit — Scheduler-only architecture identified as viable path forward)
+- Expanded CI/CD pipeline
 
 ---
 
