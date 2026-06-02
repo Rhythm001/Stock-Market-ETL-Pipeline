@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 
-
-=======
->>>>>>> 5cb2eed (Final changes)
 # Stock Market ETL + Analytics Dashboard
 
 An end-to-end data engineering pipeline that extracts stock market data, transforms and stores it in PostgreSQL, orchestrates workflows using **Apache Airflow** and **Docker Compose**, and visualizes analytics through an interactive **Streamlit dashboard**.
@@ -264,7 +260,7 @@ Successful execution confirms:
 
 - dbt integration for transformation layer
 - Kafka-based streaming ingestion
-- Production deployment on Render (attempted; Airflow webserver exceeds Free tier 512MB RAM limit — Scheduler-only architecture identified as viable path forward)
+- Production deployment on Render (attempted; Airflow webserver exceeds Free tier 512MB RAM limit - Scheduler-only architecture identified as viable path forward)
 - Expanded CI/CD pipeline
 
 ---
